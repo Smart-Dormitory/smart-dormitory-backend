@@ -7,7 +7,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class UserDto {
+export class CreateUserDto {
   // studentId
   @IsNotEmpty()
   @Matches(/^[0-9]{8}$/, { message: '학번은 숫자 8자리여야 합니다' })
