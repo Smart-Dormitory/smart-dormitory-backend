@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsIn,
   IsNotEmpty,
   IsString,
   Matches,
@@ -38,13 +39,23 @@ export class UserDto {
   )
   readonly password: string;
 
-  // room Number
+  // roomName
   @IsString()
-  @Matches(/^(인화동|성실동|미래동|목련화동|소나무동)$/, {
-    message:
-      '올바른 호실 정보를 입력하세요. (인화동, 성실동, 미래동, 목련화동, 소나무동)',
-  })
-  @MaxLength(6, { message: '호실 정보는 6글자까지 가능합니다.' })
   @IsNotEmpty()
-  readonly livingRoom: string;
+  @IsIn(['인화동', '성실동', '미래동', '목련화동', '소나무동'], {
+    message:
+      '올바른 생활관을 입력하세요. (인화동, 성실동, 미래동, 목련화동, 소나무동)',
+  })
+  readonly roomName: string;
+
+  // roomNumber
+  @IsString()
+  @Matches(/^[0-9]{1,4}호$/, {
+    message: '호실 숫자는 최대 4글자까지 가능합니다. (예: "2002호")',
+  })
+  @MaxLength(5, {
+    message: '호실 숫자는 최대 4글자까지 가능합니다. (예: "2002호")',
+  })
+  @IsNotEmpty()
+  readonly roomNumber: string;
 }
