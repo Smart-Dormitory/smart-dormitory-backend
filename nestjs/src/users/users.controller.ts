@@ -1,22 +1,31 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserDto } from './dto/create-user.dto';
 import { UserLoginDto } from './dto/user-login.dto';
+import { AuthService } from '../auth/auth.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('/signup')
-  async signUp(@Body() body: UserDto): Promise<string> {
+  async signUp(@Body() body: CreateUserDto): Promise<string> {
     console.log(body);
     await this.usersService.signUp(body);
     return '가입을 환영합니다.';
   }
 
   @Post('/login')
-  async logIn(@Body() loginDto: UserLoginDto): Promise<string> {
-    await this.usersService.logIn(loginDto.studentId, loginDto.password);
-    return '로그인 성공';
+  async logIn(
+    @Body() loginDto: UserLoginDto,
+  ): Promise<{ accessToken: string }> {
+    const { accessToken } = await this.authService.logIn(
+      loginDto.studentId,
+      loginDto.password,
+    );
+    return { accessToken };
   }
 }
