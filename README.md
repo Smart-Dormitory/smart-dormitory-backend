@@ -13,10 +13,10 @@
 <br>
 
 ## 🔨 Tech Stacks Used
-- [Node.js] (https://nodejs.org/ko)
-- [NestJS] (https://nestjs.com/)
-- [MongoDB] (https://www.mongodb.com/)
-- [NodeMailer] (http://nodemailer.com/)
+- [Node.js](https://nodejs.org/ko)
+- [NestJS](https://nestjs.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [NodeMailer](http://nodemailer.com/)
 
 <br>
 <br>
