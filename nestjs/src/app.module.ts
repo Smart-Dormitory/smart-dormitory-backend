@@ -3,14 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersController } from './users/users.controller';
 import { UsersModule } from './users/users.module';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
     UsersModule,
-    MongooseModule.forRoot(
-      'mongodb+srv://@wisoft.totgrt9.mongodb.net/?retryWrites=true&w=majority',
-    ),
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.DATABASE_URL || ''),
   ],
   controllers: [AppController, UsersController],
   providers: [AppService],
