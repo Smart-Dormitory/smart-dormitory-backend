@@ -9,6 +9,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './users.schema';
+import * as bcrypt from 'bcrypt';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
@@ -34,11 +35,13 @@ export class UsersService {
       throw new UnauthorizedException('이미 가입된 이메일입니다.');
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = await this.userModel.create({
       studentId,
       name,
       email,
-      password,
+      password: hashedPassword,
       roomName,
       roomNumber,
     });
@@ -48,14 +51,7 @@ export class UsersService {
 
   async logIn(studentId: string, password: string) {
     const user = await this.userModel.findOne({ studentId });
-
-    if (!user) {
-      throw new UnauthorizedException(
-        '로그인 실패 : 학번이나 비밀번호가 일치하지 않습니다.',
-      );
-    }
-
-    if (user.password !== password) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException(
         '로그인 실패 : 학번이나 비밀번호가 일치하지 않습니다.',
       );

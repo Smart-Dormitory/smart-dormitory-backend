@@ -28,4 +28,9 @@ export class UsersController {
     );
     return { accessToken };
   }
+
+  // @Post('/logout')
+  // // async logOut(@Body() token: string): Promise<string> {
+  //   return '로그아웃 되었습니다.';
+  // }
 }
