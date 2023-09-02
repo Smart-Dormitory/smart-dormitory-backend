@@ -5,7 +5,8 @@ import { UsersController } from './users/users.controller';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from './auth/auth.module'; // AuthModule 임포트 추가
+import { AuthModule } from './auth/auth.module';
+import { EmailService } from './email/email.service'; // AuthModule 임포트 추가
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { AuthModule } from './auth/auth.module'; // AuthModule 임포트 추가
     MongooseModule.forRoot(process.env.DATABASE_URL || ''),
   ],
   controllers: [AppController, UsersController],
-  providers: [AppService],
+  providers: [AppService, EmailService],
 })
 export class AppModule {}
