@@ -6,12 +6,14 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
-import { EmailService } from './email/email.service'; // AuthModule 임포트 추가
+import { EmailService } from './email/email.service';
+import { ScraperModule } from './scraper/scraper.module'; // AuthModule 임포트 추가
 
 @Module({
   imports: [
     UsersModule,
-    AuthModule, // AuthModule 임포트 추가
+    AuthModule,
+    ScraperModule,
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.DATABASE_URL || ''),
   ],
