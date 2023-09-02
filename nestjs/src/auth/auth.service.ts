@@ -32,4 +32,15 @@ export class AuthService {
 
     return { accessToken };
   }
+
+  // TODO : 로그아웃 처리 추가 로직 작성 필요
+  async logOut(token: string): Promise<void> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.jwtService.verify(token, process.env.JWT_SECRET || '');
+    } catch (error) {
+      throw new Error('유효하지 않은 토큰');
+    }
+  }
 }
