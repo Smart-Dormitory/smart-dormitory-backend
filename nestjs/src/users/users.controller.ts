@@ -29,8 +29,16 @@ export class UsersController {
     return { accessToken };
   }
 
-  // @Post('/logout')
-  // // async logOut(@Body() token: string): Promise<string> {
-  //   return '로그아웃 되었습니다.';
-  // }
+  @Post('logout')
+  async logOut(@Body() payload: { accessToken: string }) {
+    const token = payload.accessToken; // accessToken 필드에서 토큰 추출
+
+    try {
+      await this.authService.logOut(token);
+
+      return { message: '로그아웃 성공' };
+    } catch (error) {
+      return { message: '로그아웃 실패', error: error.message };
+    }
+  }
 }
