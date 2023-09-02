@@ -10,9 +10,9 @@ import { UsersService } from '../users/users.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly jwtService: JwtService,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async logIn(
