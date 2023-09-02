@@ -49,16 +49,41 @@ export class UsersService {
     return user;
   }
 
-  async logIn(studentId: string, password: string) {
-    const user = await this.userModel.findOne({ studentId });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException(
-        '로그인 실패 : 학번이나 비밀번호가 일치하지 않습니다.',
-      );
-    }
-  }
-
   async findUserByStudentId(studentId: string): Promise<User | null> {
     return this.userModel.findOne({ studentId }).exec();
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
+  }
+
+  async updatePassword(studentId: string, newPassword: string) {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await this.userModel.findOneAndUpdate(
+      { studentId },
+      { password: hashedPassword },
+      { new: true },
+    );
+
+    if (!user) {
+      throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
+    }
+    return user;
+  }
+
+  async setTemporaryPasswordStatus(
+    studentId: string,
+    isTemporary: boolean,
+  ): Promise<void> {
+    const user = await this.userModel.findOneAndUpdate(
+      { studentId },
+      { isTemporaryPassword: isTemporary },
+      { new: true },
+    );
+
+    if (!user) {
+      throw new Error('사용자를 찾을 수 없습니다.');
+    }
   }
 }
