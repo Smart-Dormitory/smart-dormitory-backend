@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,7 @@ export class AuthService {
   ): Promise<{ accessToken: string }> {
     const user = await this.usersService.findUserByStudentId(studentId);
 
-    if (!user || user.password !== password) {
+    if (!user || !(await compare(password, user.password))) {
       throw new UnauthorizedException(
         '로그인 실패 : 학번이나 비밀번호가 일치하지 않습니다.',
       );

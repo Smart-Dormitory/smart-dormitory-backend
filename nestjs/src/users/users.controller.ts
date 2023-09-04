@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserLoginDto } from './dto/user-login.dto';
 import { AuthService } from '../auth/auth.service';
@@ -64,7 +64,7 @@ export class UsersController {
     }
   }
 
-  @Post('/help')
+  @Post('/help/pwd')
   async resetPassword(@Body() { email }: { email: string }): Promise<string> {
     //이메일 주소에 대한 사용자 존재 여부 확인
     const user = await this.usersService.findByEmail(email);
