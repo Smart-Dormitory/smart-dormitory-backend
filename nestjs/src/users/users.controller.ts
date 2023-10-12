@@ -4,6 +4,7 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EmailService } from '../email/email.service';
+import {ApiOperation}             from "@nestjs/swagger";
 
 @Controller('users')
 export class UsersController {
@@ -13,6 +14,7 @@ export class UsersController {
     private readonly emailService: EmailService,
   ) {}
 
+  @ApiOperation({summary: '회원가입'})
   @Post('/signup')
   async signUp(@Body() body: CreateUserDto): Promise<string> {
     console.log(body);
@@ -20,6 +22,7 @@ export class UsersController {
     return '가입을 환영합니다.';
   }
 
+  @ApiOperation({summary: '로그인'})
   @Post('/login')
   async logIn(
     @Body() loginDto: UserLoginDto,
@@ -51,6 +54,7 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({summary: '로그아웃'})
   @Post('logout')
   async logOut(@Body() payload: { accessToken: string }) {
     const token = payload.accessToken; // accessToken 필드에서 토큰 추출

@@ -11,6 +11,8 @@ import { ScraperModule } from './scraper/scraper.module'; // AuthModule 임포�
 import { CalendarController } from './calendar/calendar.controller';
 import { RentalController } from './rental/rental.controller';
 import { ShareSpaceController } from './share-space/share-space.controller';
+import { MyModule } from './my/my.module';
+import { RoomCheckDayModule } from './room-check-day/room-check-day.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { ShareSpaceController } from './share-space/share-space.controller';
     ScraperModule,
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.DATABASE_URL || ''),
+    MyModule,
+    RoomCheckDayModule,
   ],
   controllers: [AppController, UsersController, CalendarController, RentalController, ShareSpaceController],
   providers: [AppService, EmailService],
