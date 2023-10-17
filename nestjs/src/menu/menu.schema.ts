@@ -8,6 +8,12 @@ export class Menu extends Document {
     required: true,
   })
   @IsString()
+  date: string;
+
+  @Prop({
+    required: true,
+  })
+  @IsString()
   breakfast: string;
 
   @Prop({
