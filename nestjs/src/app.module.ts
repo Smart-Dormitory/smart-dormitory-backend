@@ -13,6 +13,9 @@ import { RentalController } from './rental/rental.controller';
 import { ShareSpaceController } from './share-space/share-space.controller';
 import { MyModule } from './my/my.module';
 import { RoomCheckDayModule } from './room-check-day/room-check-day.module';
+import { InfoController } from './info/info.controller';
+import { AlertModule } from './alert/alert.module';
+import { NoticeModule } from './notice/notice.module';
 
 @Module({
   imports: [
@@ -23,8 +26,17 @@ import { RoomCheckDayModule } from './room-check-day/room-check-day.module';
     MongooseModule.forRoot(process.env.DATABASE_URL || ''),
     MyModule,
     RoomCheckDayModule,
+    AlertModule,
+    NoticeModule,
   ],
-  controllers: [AppController, UsersController, CalendarController, RentalController, ShareSpaceController],
+  controllers: [
+    AppController,
+    UsersController,
+    CalendarController,
+    RentalController,
+    ShareSpaceController,
+    InfoController,
+  ],
   providers: [AppService, EmailService],
 })
 export class AppModule {}
