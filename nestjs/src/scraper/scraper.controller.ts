@@ -20,6 +20,13 @@ export class ScraperController implements OnModuleInit {
 
       for (const trElement of trElements) {
         const tdElements = await trElement.$$('td');
+        const thElements = await trElement.$$('th');
+
+        const date = await page.evaluate((element) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          return element ? element.textContent : '';
+        }, thElements[0]);
 
         const breakfast = await page.evaluate((element) => {
           return element
@@ -55,10 +62,12 @@ export class ScraperController implements OnModuleInit {
         }, tdElements[2]);
 
         // 데이터를 객체로 만들어 배열에 추가
-        menus.push({ breakfast, lunch, dinner });
+        menus.push({ date, breakfast, lunch, dinner });
       }
 
       // 데이터베이스에 저장
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       await this.menuService.clearAndCreateMenus(menus);
     } catch (error) {
       console.error('오류 발생:', error);
