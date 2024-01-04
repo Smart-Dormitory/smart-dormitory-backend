@@ -15,7 +15,6 @@ import { MyModule } from './my/my.module';
 import { RoomCheckDayModule } from './room-check-day/room-check-day.module';
 import { InfoController } from './info/info.controller';
 import { AlertModule } from './alert/alert.module';
-import { NoticeModule } from './notice/notice.module';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { NoticeModule } from './notice/notice.module';
     MyModule,
     RoomCheckDayModule,
     AlertModule,
-    NoticeModule,
   ],
   controllers: [
     AppController,
