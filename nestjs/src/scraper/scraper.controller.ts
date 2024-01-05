@@ -30,7 +30,9 @@ export class ScraperController {
         const date = await page.evaluate((element) => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          return element ? element.textContent : '';
+          return element
+            ? element.textContent?.replace(/\(\S+\)/, '') || '' // 정규식을 사용하여 마지막 괄호와 그 안의 단어들을 제외
+            : '';
         }, thElements[0]);
 
         const breakfast = await page.evaluate((element) => {
