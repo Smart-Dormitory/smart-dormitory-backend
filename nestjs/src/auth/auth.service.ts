@@ -6,7 +6,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { compare } from 'bcrypt';
+import * as bcrypt from 'bcrypt';
+import { UserLoginDto } from '../users/dto/user-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,30 +17,44 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async logIn(
-    studentId: string,
-    password: string,
-  ): Promise<{ accessToken: string }> {
+  async jwtLogIn(data: UserLoginDto) {
+    const { studentId, password } = data;
     const user = await this.usersService.findUserByStudentId(studentId);
-
-    if (!user || !(await compare(password, user.password))) {
-      throw new UnauthorizedException(
-        '로그인 실패 : 학번이나 비밀번호가 일치하지 않습니다.',
-      );
+    if (!user) {
+      throw new UnauthorizedException('아이디와 비밀번호를 확인해주세요.');
     }
 
-    const payload = { sub: user.studentId }; // 유저 아이디를 토큰 페이로드에 추가
-    const accessToken = this.jwtService.sign(payload);
+    const isPasswordValidated: boolean = await bcrypt.compare(
+      password,
+      user.password,
+    );
 
-    return { accessToken };
+    if (!isPasswordValidated) {
+      throw new UnauthorizedException('비밀번호를 다시 확인해주세요.');
+    }
+
+    const payload = { studentId: user.studentId };
+
+    return {
+      token: this.jwtService.sign(payload),
+    };
   }
 
-  // TODO : 로그아웃 처리 추가 로직 작성 필요
-  async logOut(token: string): Promise<void> {
+  // async logOut(token: string): Promise<void> {
+  //   try {
+  //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //     // @ts-ignore
+  //     this.jwtService.verify(token, process.env.JWT_SECRET || '');
+  //   } catch (error) {
+  //     throw new Error('유효하지 않은 토큰');
+  //   }
+  // }
+
+  async jwtLogOut(token: string): Promise<void> {
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      this.jwtService.verify(token, process.env.JWT_SECRET || '');
+      this.jwtService.verify(token, process.env.JWT_TOKEN || '');
     } catch (error) {
       throw new Error('유효하지 않은 토큰');
     }
