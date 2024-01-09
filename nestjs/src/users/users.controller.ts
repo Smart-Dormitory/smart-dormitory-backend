@@ -1,10 +1,18 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  NotFoundException,
+  Param,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserLoginDto } from './dto/user-login.dto';
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EmailService } from '../email/email.service';
-import {ApiOperation}             from "@nestjs/swagger";
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -14,7 +22,7 @@ export class UsersController {
     private readonly emailService: EmailService,
   ) {}
 
-  @ApiOperation({summary: '회원가입'})
+  @ApiOperation({ summary: '회원가입' })
   @Post('/signup')
   async signUp(@Body() body: CreateUserDto): Promise<string> {
     console.log(body);
@@ -22,51 +30,67 @@ export class UsersController {
     return '가입을 환영합니다.';
   }
 
-  @ApiOperation({summary: '로그인'})
+  @ApiOperation({ summary: '로그인' })
   @Post('/login')
-  async logIn(
-    @Body() loginDto: UserLoginDto,
-  ): Promise<{ accessToken: string; message: string }> {
-    // 사용자가 입력한 패스워드를 가져옴
-    const { studentId, password } = loginDto;
-
-    // 임시 비밀번호 형식 확인
-    if (password.startsWith('@Temp@')) {
-      // 임시 비밀번호로 로그인한 경우, 일시적으로 변경 비밀번호로 로그인
-
-      // 사용자를 일시적으로 변경 비밀번호로 로그인
-      const { accessToken } = await this.authService.logIn(studentId, password);
-
-      await this.usersService.setTemporaryPasswordStatus(studentId, true);
-
-      return {
-        accessToken,
-        message: '임시 비밀번호로 로그인하셨습니다. 비밀번호를 변경하세요.',
-      };
-    } else {
-      // 일반 비밀번호로 로그인한 경우
-      const { accessToken } = await this.authService.logIn(studentId, password);
-
-      return {
-        accessToken,
-        message: '로그인 되었습니다.',
-      };
-    }
+  async login(@Body() data: UserLoginDto) {
+    return this.authService.jwtLogIn(data);
   }
 
-  @ApiOperation({summary: '로그아웃'})
+  // async logIn(
+  //   @Body() loginDto: UserLoginDto,
+  // ): Promise<{ accessToken: string; message: string }> {
+  //   // 사용자가 입력한 패스워드를 가져옴
+  //   const { studentId, password } = loginDto;
+  //
+  //   // 임시 비밀번호 형식 확인
+  //   if (password.startsWith('@Temp@')) {
+  //     // 임시 비밀번호로 로그인한 경우, 일시적으로 변경 비밀번호로 로그인
+  //
+  //     // 사용자를 일시적으로 변경 비밀번호로 로그인
+  //     const { accessToken } = await this.authService.logIn(studentId, password);
+  //
+  //     await this.usersService.setTemporaryPasswordStatus(studentId, true);
+  //
+  //     return {
+  //       accessToken,
+  //       message: '임시 비밀번호로 로그인하셨습니다. 비밀번호를 변경하세요.',
+  //     };
+  //   } else {
+  //     // 일반 비밀번호로 로그인한 경우
+  //     const { accessToken } = await this.authService.logIn(studentId, password);
+  //
+  //     return {
+  //       accessToken,
+  //       message: '로그인 되었습니다.',
+  //     };
+  //   }
+  // }
+
+  @ApiOperation({ summary: '로그아웃' })
   @Post('logout')
-  async logOut(@Body() payload: { accessToken: string }) {
-    const token = payload.accessToken; // accessToken 필드에서 토큰 추출
-
-    try {
-      await this.authService.logOut(token);
-
-      return { message: '로그아웃 성공' };
-    } catch (error) {
-      return { message: '로그아웃 실패', error: error.message };
-    }
+  async logOut(): Promise<string> {
+    return 'success';
   }
+  // async logOut(@Body() token: string) {
+  //   try {
+  //     this.authService.jwtLogOut(token);
+  //     return { message: '로그아웃 아그로' };
+  //   } catch (error) {
+  //     return { message: '로그아웃 실패', error: error.message };
+  //   }
+  // }
+
+  // async logOut(@Body() payload: { accessToken: string }) {
+  //   const token = payload.accessToken; // accessToken 필드에서 토큰 추출
+  //
+  //   try {
+  //     await this.authService.logOut(token);
+  //
+  //     return { message: '로그아웃 성공' };
+  //   } catch (error) {
+  //     return { message: '로그아웃 실패', error: error.message };
+  //   }
+  // }
 
   @Post('/help/pwd')
   async resetPassword(@Body() { email }: { email: string }): Promise<string> {
